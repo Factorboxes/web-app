@@ -1,0 +1,4 @@
+'use client';
+import {useState} from 'react';
+export type ProductImage={id:string,url:string,slot:number};
+export default function ProductGallery({images=[],name}:{images?:ProductImage[],name:string}){const [selected,setSelected]=useState(0);const current=images[selected]||images[0];return <div className="productgallery"><div className="gallerymain"><img src={current?.url||'/boxes.png'} alt={current?name+' รูปที่ '+(selected+1):'ภาพประกอบ '+name}/>{images.length>1&&<small>{Math.min(selected+1,images.length)} / {images.length}</small>}</div>{images.length>1&&<div className="gallerythumbs">{images.map((img,i)=><button key={img.id} className={i===selected?'selected':''} aria-label={'ดู '+name+' รูปที่ '+(i+1)} aria-pressed={i===selected} onClick={()=>setSelected(i)}><img src={img.url} alt=""/></button>)}</div>}</div>}

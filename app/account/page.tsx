@@ -1,0 +1,6 @@
+import {chatGPTSignInPath,chatGPTSignOutPath} from '@/app/chatgpt-auth';
+import {identity} from '@/lib/member';
+import {Header,Footer} from '../shared';
+import Profile from './profile';
+export const dynamic='force-dynamic';
+export default async function Page(){const user=await identity();return <><Header/><main className="container memberpage"><div className="eyebrow">FACTORBOXES MEMBER</div><h1>สมาชิกและที่อยู่จัดส่ง</h1><p className="muted">บันทึกข้อมูลผู้รับ เพื่อใช้กับคำสั่งซื้อครั้งต่อไป</p>{user?<><section className="accountsession"><div><b>เข้าสู่ระบบแล้ว</b><p>{user.email}</p><small>อีเมลที่ใช้เข้าสู่ระบบ</small></div><a href={chatGPTSignOutPath('/account')} target="_top" className="secondary">ออกจากระบบ / เปลี่ยนบัญชี</a></section><a className="primary historylink" href="/account/orders">ประวัติคำสั่งซื้อ / ติดตามสินค้า →</a><Profile signInPath={chatGPTSignInPath('/account')}/></>:<section className="panel form"><h3>เข้าสู่ระบบ / เริ่มสมัครสมาชิก</h3><p>สมัครหรือเข้าสู่ระบบด้วยอีเมลและรหัสผ่าน แล้วบันทึกที่อยู่จัดส่ง</p><a className="primary" href={chatGPTSignInPath('/account')} target="_top">เข้าสู่ระบบเพื่อดำเนินการต่อ</a><small>หากเซสชันเดิมยังใช้งานได้ ระบบจะใช้บัญชีเดิม เมื่อหมดอายุต้องยืนยันตัวตนอีกครั้ง</small><p className="muted">สมัครใหม่ต้องยืนยันอีเมลก่อนเข้าสู่ระบบ</p></section>}</main><Footer/></>}
