@@ -1,3 +1,9 @@
+อัปเดตล่าสุด: สถิติคนเข้าเว็บ — อ่าน [UPDATE-ANALYTICS-TH.md](UPDATE-ANALYTICS-TH.md) และรัน supabase/05-analytics.sql ก่อนใช้งาน
+
+อัปเดตล่าสุด: ระบบเลือกบริษัทขนส่งและเพิ่มรายชื่อเอง — อ่าน [UPDATE-CARRIERS-TH.md](UPDATE-CARRIERS-TH.md)
+
+# อัปเดตเว็บที่ใช้อยู่: อ่าน FIX-FIRST-TH.md ก่อน
+
 # FACTORBOXES — GitHub + Vercel + Supabase
 
 ชุดเว็บล่าสุด พร้อมหมวดสินค้า สิทธิ์แอดมิน และสรุปรายได้แยก VAT

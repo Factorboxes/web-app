@@ -10,7 +10,7 @@
 2. เลือกภูมิภาคใกล้ลูกค้า เช่น Singapore แล้วรอสร้างเสร็จ
 3. เปิด SQL Editor > New query
 4. เปิดไฟล์ `supabase/01-schema.sql` คัดลอกทั้งหมดลงช่อง SQL แล้วกด Run
-5. ทำเช่นเดียวกันกับ `supabase/02-products.sql` และ `supabase/03-storage.sql` ตามลำดับ
+5. ทำเช่นเดียวกันกับ `supabase/02-products.sql` และ `supabase/03-storage.sql` ตามลำดับ จากนั้นรัน `supabase/04-order-numbers.sql`
 6. ตรวจ Table Editor ว่ามี products 40 รายการ และ Storage มี bucket ชื่อ factorboxes แบบ private
 
 ใช้ SQL กับโปรเจกต์ใหม่ ไม่ควรรวมกับตารางชื่อเดียวกันของระบบอื่น

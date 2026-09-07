@@ -10,7 +10,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node tests/migration.cjs"
+    "test": "node tests/migration.cjs && node tests/order-numbers.cjs && node tests/delete-order.cjs && node tests/carriers.cjs && node tests/analytics.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

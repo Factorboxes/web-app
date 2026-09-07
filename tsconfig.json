@@ -36,6 +36,9 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "FACTORBOXES-Delete-Test-Orders/**",
+    "FACTORBOXES-Order-Numbers-0000/**",
+    "FACTORBOXES-Floating-Cart/**"
   ]
 }
