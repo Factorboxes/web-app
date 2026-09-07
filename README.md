@@ -1,4 +1,6 @@
-> ล่าสุด: หน้าติดตามพัสดุใหม่ อ่าน [UPDATE-TRACKING-TH.md](UPDATE-TRACKING-TH.md)
+> ล่าสุด: หลังบ้านใหม่ พร้อมตรวจสลิป งานพิมพ์ และขนาดแบนเนอร์ อ่าน [UPDATE-ADMIN-TH.md](UPDATE-ADMIN-TH.md)
+
+> หน้าติดตามพัสดุใหม่ อ่าน [UPDATE-TRACKING-TH.md](UPDATE-TRACKING-TH.md)
 
 อัปเดตหน้าชำระเงินล่าสุด: [รายละเอียดและวิธีอัปโหลด](UPDATE-PAYMENT-TH.md)
 

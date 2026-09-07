@@ -1,0 +1,10 @@
+import {orderNumber} from './order-number';
+export const orderFilters=['all','waiting','pending','packing','shipping','delivered','cancelled','paid'] as const;
+export type OrderFilter=typeof orderFilters[number];
+export const orderFilterLabels:Record<OrderFilter,string>={all:'ทั้งหมด',waiting:'รอชำระเงิน',pending:'รอตรวจสลิป',packing:'รอแพ็ก / กำลังแพ็ก',shipping:'ระหว่างจัดส่ง',delivered:'ส่งสำเร็จ',cancelled:'ยกเลิก',paid:'ชำระแล้ว'};
+export type AdminOrder={id:string;order_no?:number|string;created:string;customer:string;phone:string;address:string;tax:string;items:string;subtotal:number;shipping:number;vat:number;total:number;status:string;payment:string;carrier:string;tracking:string;token:string;transferred_at:string|null;coupon_code:string;coupon_discount:number;pending_slips:number};
+export type OrderSection='details'|'payment'|'shipping'|'documents';
+export function paymentBadge(o:Pick<AdminOrder,'payment'|'status'|'pending_slips'>){if(o.status==='ยกเลิก')return {label:'ยกเลิก',tone:'red'};if(o.payment==='ชำระแล้ว')return {label:'ชำระแล้ว',tone:'green'};if(o.pending_slips>0)return {label:'แนบสลิปแล้ว',tone:'teal'};return {label:'รอชำระ',tone:'amber'}}
+export function orderTone(status:string){return status==='ยกเลิก'?'red':status==='ส่งสำเร็จ'?'green':status==='จัดส่งแล้ว'?'blue':['ชำระแล้ว','กำลังแพ็ก'].includes(status)?'amber':'gray'}
+export function orderItems(order:Pick<AdminOrder,'items'>):{id:string;name:string;qty:number;price:number}[]{try{const items=JSON.parse(order.items);return Array.isArray(items)?items:[]}catch{return []}}
+export function orderCsv(orders:AdminOrder[]){const cell=(value:unknown)=>{let s=String(value??'');if(/^[=+@\-\t\r]/.test(s))s="'"+s;return '"'+s.replaceAll('"','""')+'"'};return '\uFEFF'+[['เลขออเดอร์','วันที่สั่งซื้อ','ลูกค้า','เบอร์โทร','ยอดสินค้า','VAT สินค้า','ค่าจัดส่ง','ยอดรวม','การชำระเงิน','สถานะ','ขนส่ง','เลขพัสดุ'],...orders.map(o=>[orderNumber(o),o.created,o.customer,o.phone,(o.subtotal/100).toFixed(2),(o.vat/100).toFixed(2),(o.shipping/100).toFixed(2),(o.total/100).toFixed(2),paymentBadge(o).label,o.status,o.carrier,o.tracking])].map(r=>r.map(cell).join(',')).join('\r\n')}
