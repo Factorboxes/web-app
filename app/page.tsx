@@ -1,2 +1,2 @@
-import Shop from './shop';
-export default function Page(){return <Shop/>}
+import {redirect} from 'next/navigation';
+export default function Page(){redirect('/login')}
