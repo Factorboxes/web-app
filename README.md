@@ -1,4 +1,6 @@
-> ล่าสุด: หลังบ้านใหม่ พร้อมตรวจสลิป งานพิมพ์ และขนาดแบนเนอร์ อ่าน [UPDATE-ADMIN-TH.md](UPDATE-ADMIN-TH.md)
+> ล่าสุด: หน้าสมาชิกใหม่ พร้อมค้นหาและเปิดดูสินค้าทุกออเดอร์ย้อนหลัง อ่าน [UPDATE-MEMBER-TH.md](UPDATE-MEMBER-TH.md)
+
+> หลังบ้านใหม่ พร้อมตรวจสลิป งานพิมพ์ และขนาดแบนเนอร์ อ่าน [UPDATE-ADMIN-TH.md](UPDATE-ADMIN-TH.md)
 
 > หน้าติดตามพัสดุใหม่ อ่าน [UPDATE-TRACKING-TH.md](UPDATE-TRACKING-TH.md)
 
