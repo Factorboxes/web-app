@@ -1,0 +1,1 @@
+export function orderNumber(order:{id:string,order_no?:number|string|null}){return order.order_no!==undefined&&order.order_no!==null?String(order.order_no).padStart(4,'0'):'FB-'+order.id.slice(0,8).toUpperCase()}
