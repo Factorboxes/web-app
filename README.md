@@ -1,3 +1,5 @@
+อัปเดตล่าสุด: ข้อความส่งฟรีและเรทถัดไปในตะกร้า — อ่าน [UPDATE-TIER-PROMPT-TH.md](UPDATE-TIER-PROMPT-TH.md)
+
 อัปเดตล่าสุด: แยกยืนยันออเดอร์ → ชำระเงิน — อ่าน [UPDATE-CHECKOUT-TH.md](UPDATE-CHECKOUT-TH.md)
 
 อัปเดตล่าสุด: ระบบบัญชี / วางบิล — อ่าน [UPDATE-ACCOUNTING-TH.md](UPDATE-ACCOUNTING-TH.md) และรัน supabase/06-accounting.sql
