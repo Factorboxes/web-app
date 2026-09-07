@@ -1,15 +1,15 @@
+import {orderNumber} from '@/lib/order-number';
 import {z} from 'zod';
 import {db,adminAccess} from '@/lib/server';
 import {storageBucket} from '@/lib/storage';
 export const dynamic='force-dynamic';
-export async function GET(){try{return Response.json({canDelete:(await adminAccess()).owner},{headers:{'Cache-Control':'private, no-store'}})}catch{return Response.json({canDelete:false},{status:503})}}
+export async function GET(request:Request){try{if(!(await adminAccess()).owner)return Response.json({canDelete:false},{headers:{'Cache-Control':'private, no-store'}});const id=z.string().uuid().parse(new URL(request.url).searchParams.get('id'));const order=await db().prepare('SELECT id,order_no FROM orders WHERE id=?').bind(id).first<{id:string,order_no:number}>();return Response.json({canDelete:!!order,number:order?orderNumber(order):''},{headers:{'Cache-Control':'private, no-store'}})}catch{return Response.json({canDelete:false},{status:503})}}
 export async function POST(request:Request){try{
  if(request.headers.get('origin')!==new URL(request.url).origin||!(await adminAccess()).owner)return Response.json({error:'เฉพาะเจ้าของร้านเท่านั้นที่ลบออเดอร์ได้'},{status:403});
  const b=z.object({id:z.string().uuid(),confirmation:z.string().trim()}).parse(await request.json());
- const number='FB-'+b.id.slice(0,8).toUpperCase();
- if(b.confirmation!==number)return Response.json({error:'พิมพ์เลขออเดอร์ให้ตรงก่อนยืนยันลบ'},{status:400});
- const order=await db().prepare('SELECT id FROM orders WHERE id=?').bind(b.id).first();
+ const order=await db().prepare('SELECT id,order_no FROM orders WHERE id=?').bind(b.id).first<{id:string,order_no:number}>();
  if(!order)return Response.json({error:'ไม่พบออเดอร์ หรือออเดอร์ถูกลบแล้ว กรุณารีเฟรชรายการ'},{status:404});
+ if(b.confirmation!==orderNumber(order))return Response.json({error:'พิมพ์เลขออเดอร์ให้ตรงก่อนยืนยันลบ'},{status:400});
  const slips=(await db().prepare('SELECT storage_key FROM slips WHERE order_id=?').bind(b.id).all()).results;
  await db().batch([
   db().prepare('DELETE FROM documents WHERE order_id=?').bind(b.id),
