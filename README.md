@@ -1,3 +1,5 @@
+อัปเดตล่าสุด: แยกยืนยันออเดอร์ → ชำระเงิน — อ่าน [UPDATE-CHECKOUT-TH.md](UPDATE-CHECKOUT-TH.md)
+
 อัปเดตล่าสุด: ระบบบัญชี / วางบิล — อ่าน [UPDATE-ACCOUNTING-TH.md](UPDATE-ACCOUNTING-TH.md) และรัน supabase/06-accounting.sql
 
 อัปเดตล่าสุด: สถิติคนเข้าเว็บ — อ่าน [UPDATE-ANALYTICS-TH.md](UPDATE-ANALYTICS-TH.md) และรัน supabase/05-analytics.sql ก่อนใช้งาน

@@ -1,0 +1,1 @@
+export function paymentStatus(order:{payment:string,status:string},slips:{status:string}[]=[]){if(order.status==='ยกเลิก')return 'ยกเลิก';if(order.payment==='ชำระแล้ว')return 'ชำระแล้ว';if(slips.some(s=>s.status==='รอตรวจสอบ'))return 'แนบสลิปแล้ว · รอตรวจสอบ';if(slips[0]?.status==='ไม่ผ่าน')return 'สลิปไม่ผ่าน · กรุณาแนบใหม่';return 'รอชำระเงิน'}
