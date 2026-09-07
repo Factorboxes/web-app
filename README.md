@@ -1,3 +1,5 @@
+> ล่าสุด: หน้าติดตามพัสดุใหม่ อ่าน [UPDATE-TRACKING-TH.md](UPDATE-TRACKING-TH.md)
+
 > ล่าสุด: หน้าสินค้าใหม่ อ่าน UPDATE-STOREFRONT-TH.md
 
 > ล่าสุด: ปรับหน้าเข้าสู่ระบบให้เล็กลง ใช้โลโก้ใหม่พร้อมแสงรอบโลโก้ อ่าน UPDATE-LOGIN-SIZE-TH.md
