@@ -1,3 +1,5 @@
+> ล่าสุด: หน้าแรกเปลี่ยนเป็นหน้าเข้าสู่ระบบพื้นส้มแล้ว อ่าน UPDATE-HOME-TH.md ส่วนหน้าสินค้าอยู่ /store
+
 > อัปเดตหน้าตา 6 หน้า: อ่าน [UPDATE-DESIGN-TH.md](UPDATE-DESIGN-TH.md) ก่อนอัปโหลด
 
 อัปเดตล่าสุด: ข้อความส่งฟรีและเรทถัดไปในตะกร้า — อ่าน [UPDATE-TIER-PROMPT-TH.md](UPDATE-TIER-PROMPT-TH.md)
