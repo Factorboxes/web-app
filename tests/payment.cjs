@@ -1,0 +1,14 @@
+const fs=require('fs'),ts=require('typescript'),assert=require('node:assert/strict');
+const view={};new Function('exports',ts.transpileModule(fs.readFileSync('lib/payment-view.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText)(view);
+const blank={bank:'',bankName:'',accountName:'',accountNumber:''};
+let bank=view.paymentBank({...blank,bank:'เลขบัญชี 999-999-9999 ธนาคารกสิกรไทย',accountNumber:'001-234-5678',bankName:'ธนาคารอื่น'});
+assert.equal(bank.copyNumber,'0012345678');assert.equal(bank.displayNumber,'001-234-5678');assert.equal(bank.isKbank,false,'configured bank takes priority');
+bank=view.paymentBank({...blank,bank:'เลขบช 0553763819 ธนาคาร กสิกรไทย\nบริษัท ตัวอย่าง'});assert.equal(bank.copyNumber,'0553763819');assert.equal(bank.isKbank,true);
+assert.equal(view.paymentBank({...blank,bank:'โทร. 0812345678'}).copyNumber,'','do not mistake phone for account');
+assert.equal(view.paymentBank({...blank,bank:'เลขบัญชี 0012345678 และ เลขบัญชี 0098765432'}).copyNumber,'','do not guess between legacy accounts');
+assert.equal(view.paymentBank(blank).copyNumber,'');
+const now=Date.parse('2026-09-07T12:00:00Z');
+assert.equal(view.transferTimestamp('2026-09-07T15:30',now),'2026-09-07T08:30:00.000Z');
+assert.equal(view.transferTimestamp('2026-09-07T15:30:12',now),'2026-09-07T08:30:12.000Z');
+assert.throws(()=>view.transferTimestamp('',now));assert.throws(()=>view.transferTimestamp('not-a-date',now));assert.throws(()=>view.transferTimestamp('2026-09-08T15:30',now));
+console.log('PASS bank identity precedence, account leading zeros, ambiguous legacy handling, Thailand time conversion and future-time validation.');
