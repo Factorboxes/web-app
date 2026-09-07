@@ -1,0 +1,3 @@
+สำคัญ: ให้อัปไฟล์/โฟลเดอร์ app และ public ที่อยู่ใน ZIP นี้เข้า ROOT ของ GitHub repo Factorboxes/web-app โดยตรง
+อย่าอัปเป็นโฟลเดอร์ factorboxes-upload-root หรือ factorboxes-redesign-pack ซ้อนเข้าไป
+หลัง Commit ตรวจที่หน้า Code ต้องเห็น app/page.tsx, app/login/page.tsx, app/factorboxes-redesign.css และ public/factorboxes-login-logo.jpeg อยู่ใน root ของ repo
