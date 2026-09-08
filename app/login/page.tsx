@@ -3,6 +3,7 @@
 import {useState, useEffect, type FormEvent} from 'react';
 import {Mail, LockKeyhole, Eye, EyeOff, ArrowRight, Truck, ReceiptText, MapPin} from 'lucide-react';
 import {browserAuth, readRememberLogin, setRememberLogin} from '@/lib/supabase/browser';
+import {InstallLink} from '../pwa';
 import {loginDestination} from '@/lib/supabase/session';
 
 type Mode = 'login' | 'signup' | 'reset' | 'password';
@@ -98,6 +99,7 @@ export default function Login() {
       <span><MapPin aria-hidden="true"/><b>จัดส่งทั่วไทย</b><small>เช็กสถานะได้</small></span>
     </div>
     <p className="login-tagline">PACK YOUR NEXT POSSIBILITY</p>
-    <a className="login-back" href="/store">เลือกชมสินค้าก่อน <ArrowRight aria-hidden="true" size={16}/></a>
+    <div className="login-actions"><InstallLink className="login-install"/>
+    <a className="login-back" href="/store">เลือกชมสินค้าก่อน <ArrowRight aria-hidden="true" size={16}/></a></div>
   </main>;
 }

@@ -76,3 +76,7 @@
   .login-brand strong{font-size:30px}.login-glass{padding-top:18px}.login-benefits{margin-top:18px}
 }
 @media(prefers-reduced-motion:reduce){.login-scene *{scroll-behavior:auto}}
+
+.login-install{display:flex;align-items:center;justify-content:center;min-height:44px;color:white;font-size:13px;text-decoration:underline;text-underline-offset:3px}.store-install{display:block;width:fit-content;margin:10px 0 0 auto;font-size:13px;padding:8px 12px;background:#fff0df;color:#aa4900;border-radius:10px}
+
+.login-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}.login-actions .login-back{margin:0}.login-actions .login-install{font-size:12px}
