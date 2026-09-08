@@ -10,7 +10,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node tests/migration.cjs && node tests/order-numbers.cjs && node tests/delete-order.cjs && node tests/carriers.cjs && node tests/analytics.cjs && node tests/accounting.cjs && node tests/checkout.cjs && node tests/tier-incentive.cjs && node tests/tracking.cjs && node tests/payment.cjs && node tests/admin-dashboard.cjs && node tests/member-orders.cjs && node tests/auth-session.cjs"
+    "test": "node tests/migration.cjs && node tests/order-numbers.cjs && node tests/delete-order.cjs && node tests/carriers.cjs && node tests/analytics.cjs && node tests/accounting.cjs && node tests/checkout.cjs && node tests/tier-incentive.cjs && node tests/tracking.cjs && node tests/payment.cjs && node tests/admin-dashboard.cjs && node tests/member-orders.cjs && node tests/auth-session.cjs && node tests/pwa.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -28,6 +28,7 @@
     "next": "16.2.6",
     "next-themes": "^0.4.6",
     "pg": "^8.23.0",
+    "qrcode": "^1.5.4",
     "radix-ui": "^1.6.7",
     "react": "19.2.6",
     "react-day-picker": "^10.0.1",
@@ -45,6 +46,7 @@
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/pg": "^8.23.1",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
