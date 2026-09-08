@@ -1,4 +1,5 @@
 'use client';
+import {usePurchaseConversion} from '@/app/use-purchase-conversion';
 import {useCallback,useEffect,useState} from 'react';
 import {ArrowRight,Ban,Check,CheckCircle2,Clock3,Copy,Info,Landmark,Link2,MapPin,ReceiptText,RefreshCw,Truck} from 'lucide-react';
 import {Header,api} from '../shared';
@@ -15,6 +16,7 @@ type Props={token:string;initial:PaymentOrder;initialSlips:Slip[];bank:BankDetai
 
 export default function Payment({token,initial,initialSlips,bank,freeShipping=750}:Props) {
   const [order,setOrder]=useState(initial),[slips,setSlips]=useState(initialSlips);
+ usePurchaseConversion(order);
   const [notice,setNotice]=useState(''),[copied,setCopied]=useState(''),[refreshing,setRefreshing]=useState(false);
   const refresh=useCallback(async()=>{
     setRefreshing(true);

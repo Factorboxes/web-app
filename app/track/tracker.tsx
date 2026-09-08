@@ -1,4 +1,5 @@
 'use client';
+import {usePurchaseConversion} from '@/app/use-purchase-conversion';
 import {useEffect,useRef,useState} from 'react';
 import {Truck,Package,House,ClipboardCheck,Search,Copy,Check,RefreshCw,ChevronRight,Headphones,MessageCircle,MapPin,ReceiptText,Info,ArrowUpRight,Clock3,AlertCircle} from 'lucide-react';
 import {orderNumber} from '@/lib/order-number';
@@ -18,6 +19,7 @@ function thaiDate(value:string,time=false){const d=new Date(value);if(Number.isN
 export default function Track(){
  const brand=useBranding();
  const [query,setQuery]=useState(''),[token,setToken]=useState(''),[order,setOrder]=useState<Order|null>(null),[slips,setSlips]=useState<Slip[]>([]);
+ usePurchaseConversion(order);
  const [busy,setBusy]=useState(false),[error,setError]=useState(''),[needsLogin,setNeedsLogin]=useState(false),[copied,setCopied]=useState(false),[notice,setNotice]=useState(''),[checkedAt,setCheckedAt]=useState(''),[freeShipping,setFreeShipping]=useState<number|null>(null);
  const controller=useRef<AbortController|null>(null);
  async function find(value:string,refresh=false){

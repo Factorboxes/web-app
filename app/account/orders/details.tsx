@@ -1,4 +1,5 @@
 'use client';
+import {usePurchaseConversion} from '@/app/use-purchase-conversion';
 import {useEffect,useState} from 'react';
 import {ArrowLeft,ArrowRight,Package,MapPin,ReceiptText,Truck,Wallet,Copy,Check,CalendarDays,Phone,RefreshCw,Info} from 'lucide-react';
 import {MemberHeading} from '../shell';
@@ -12,6 +13,7 @@ import {telephone} from '@/lib/branding';
 
 export default function OrderDetails({orderId}:{orderId:string}) {
  const [order,setOrder]=useState<MemberOrderDetail|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[expired,setExpired]=useState(false),[revision,setRevision]=useState(0),[copied,setCopied]=useState(false),[copyMessage,setCopyMessage]=useState('');
+ usePurchaseConversion(order);
  const brand=useBranding();
  useEffect(()=>{const controller=new AbortController();setLoading(true);setError('');setExpired(false);setOrder(null);
   fetch('/api/member-orders?'+new URLSearchParams({id:orderId}),{cache:'no-store',signal:controller.signal}).then(async r=>{const d=await r.json();if(r.status===401)setExpired(true);if(!r.ok)throw Error(d.error||'โหลดรายละเอียดไม่สำเร็จ');setOrder(d.order)}).catch(e=>{if(e.name!=='AbortError')setError(e.message)}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});return ()=>controller.abort();
