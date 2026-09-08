@@ -1,0 +1,21 @@
+const {PGlite}=require('@electric-sql/pglite'),fs=require('fs'),ts=require('typescript'),assert=require('node:assert/strict');
+(async()=>{
+const p=new PGlite();await p.exec("CREATE ROLE anon;CREATE ROLE authenticated;CREATE TABLE coupons(code text PRIMARY KEY,kind text,value bigint,minimum bigint DEFAULT 0,active bigint DEFAULT 1,ends_at text);CREATE TABLE orders(id text PRIMARY KEY,coupon_code text,member_id text,created text,subtotal bigint,coupon_discount bigint);");
+let admin=true;
+const adapter={prepare(sql){return{bind(...v){this.v=v;return this},async execute(){let n=0;return p.query(sql.replaceAll('?',()=>'$'+ ++n),this.v||[])},async first(){return(await this.execute()).rows[0]},async run(){return this.execute()},async all(){return{results:(await this.execute()).rows}}}}};
+const out={};new Function('exports','require',ts.transpileModule(fs.readFileSync('app/api/coupons/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText)(out,k=>({'zod':require('zod'),'@/lib/server':{db:()=>adapter,isAdmin:async()=>admin},'@/lib/member':{},'@/lib/catalog':{},'@/lib/coupons':{}}[k]));
+const req=(code,extra={},origin='https://shop.test')=>new Request('https://shop.test/api/coupons',{method:'POST',headers:{origin,'content-type':'application/json'},body:JSON.stringify({action:'create',code,kind:'fixed',value:100,minimum:0,active:1,ends_at:null,...extra})});
+const oldLog=console.error;console.error=()=>{};
+let r=await out.POST(req('FIRST'));assert.equal(r.status,503);assert.match((await r.json()).error,/18-coupon-quotas.sql/);
+const sql=fs.readFileSync('supabase/18-coupon-quotas.sql','utf8');await p.exec(sql);
+for(const code of ['FIRST','SECOND','THIRD'])assert.equal((await out.POST(req(code))).status,200);
+assert.equal((await(await out.GET()).json()).coupons.length,3);
+assert.equal((await out.POST(req('first',{value:999}))).status,409);
+assert.equal(Number((await p.query("SELECT value FROM coupons WHERE code='FIRST'")).rows[0].value),100);
+assert.equal((await out.POST(req('SECOND',{action:'update',value:200}))).status,200);
+assert.equal((await out.POST(req('MISSING',{action:'update'}))).status,404);
+await p.exec(sql);assert.equal((await(await out.GET()).json()).coupons.length,3);
+assert.equal((await out.POST(req('FOURTH',{},'https://evil.test'))).status,403);
+admin=false;assert.equal((await out.POST(req('FOURTH'))).status,403);
+console.error=oldLog;await p.close();console.log('PASS: missing schema guidance, migration, three distinct codes, duplicate protection, edit, missing edit, migration preserves codes, origin/admin guards');
+})().catch(e=>{console.error(e);process.exit(1)});
