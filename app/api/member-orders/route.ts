@@ -18,7 +18,7 @@ export async function GET(request: Request) {
       limit: z.coerce.number().int().min(1).max(50).default(20),
     }).parse(Object.fromEntries(new URL(request.url).searchParams));
     if (params.id) {
-      const order = await db().prepare(`SELECT o.id,o.order_no,o.token,o.created,o.customer,o.phone,o.address,o.tax,o.items,o.subtotal,o.shipping,o.vat,o.total,o.status,o.carrier,o.tracking,o.payment,o.coupon_code,o.coupon_discount,o.transferred_at,${pending} FROM orders o WHERE o.member_id=? AND o.id=?`).bind(user.id, params.id).first();
+      const order = await db().prepare(`SELECT o.id,o.order_no,o.token,o.created,o.customer,o.phone,o.address,o.tax,o.items,o.subtotal,o.shipping,o.vat,o.total,o.status,o.carrier,o.tracking,o.payment,o.coupon_code,o.coupon_discount,o.special_code,o.special_discount,o.transferred_at,${pending} FROM orders o WHERE o.member_id=? AND o.id=?`).bind(user.id, params.id).first();
       return order ? Response.json({order}, {headers}) : Response.json({error: 'ไม่พบคำสั่งซื้อนี้ในบัญชีของคุณ'}, {status: 404, headers});
     }
     const where = ['o.member_id=?'];

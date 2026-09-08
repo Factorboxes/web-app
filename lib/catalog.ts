@@ -4,8 +4,8 @@ export const initialProducts=[{"id": "SX", "name": "กล่อง SX ไม่
 export const defaultSettings={vatRate:7,freeShipping:750,shippingFee:50,priceConfirmed:true,bank:'',bankName:'',accountName:'',accountNumber:'',seller:'บริษัท 9ทีที',sellerTax:'',sellerAddress:''};
 export const statuses=['รอยืนยัน','รอชำระเงิน','ชำระแล้ว','กำลังแพ็ก','จัดส่งแล้ว','ส่งสำเร็จ','ยกเลิก'];
 export const money=(satang:number)=>new Intl.NumberFormat('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}).format(satang/100);
-export type Coupon={code:string,kind:'fixed'|'percent',value:number,minimum:number,active:number,ends_at:string|null};
-export function totals<T extends {price:number,qty:number,tiers?:number[]}>(items:T[],s:typeof defaultSettings,coupon?:Coupon|null){
+export type Coupon={scope?:'regular'|'special',code:string,kind:'fixed'|'percent',value:number,minimum:number,active:number,ends_at:string|null};
+export function totals<T extends {price:number,qty:number,tiers?:number[]}>(items:T[],s:typeof defaultSettings,coupon?:Coupon|null,special?:Coupon|null){
  const baseSubtotal=items.reduce((a,i)=>a+i.price*i.qty,0);
  let tierIndex=0;for(let i=1;i<tierThresholds.length;i++)if(baseSubtotal>=tierThresholds[i]*100)tierIndex=i;
  const pricedItems=items.map(i=>({...i,basePrice:i.price,price:i.tiers?.[tierIndex]??i.price}));
@@ -13,7 +13,10 @@ export function totals<T extends {price:number,qty:number,tiers?:number[]}>(item
  const shipping=!items.length||baseSubtotal>=Math.round(s.freeShipping*100)?0:Math.round(s.shippingFee*100);
  const couponValid=!!coupon&&coupon.active===1&&tierSubtotal>=coupon.minimum&&(!coupon.ends_at||new Date(coupon.ends_at).getTime()>=Date.now());
  const couponDiscount=couponValid?Math.min(tierSubtotal,Math.max(0,coupon!.kind==='fixed'?coupon!.value:Math.round(tierSubtotal*coupon!.value/10000))):0;
- const subtotal=tierSubtotal-couponDiscount;
+ const afterRegular=tierSubtotal-couponDiscount;
+ const specialValid=!!special&&special.scope==='special'&&special.code!==coupon?.code&&special.active===1&&afterRegular>=special.minimum&&(!special.ends_at||Date.parse(special.ends_at)>=Date.now());
+ const specialDiscount=specialValid?Math.min(afterRegular,Math.max(0,special!.kind==='fixed'?special!.value:Math.round(afterRegular*special!.value/10000))):0;
+ const subtotal=afterRegular-specialDiscount;
  const total=subtotal+shipping;const vat=Math.round(subtotal*s.vatRate/(100+s.vatRate));
- return {subtotal,shipping,total,vat,baseSubtotal,tierSavings:baseSubtotal-tierSubtotal,tierSubtotal,couponDiscount,couponValid,tierIndex,pricedItems};
+ return {subtotal,shipping,total,vat,baseSubtotal,tierSavings:baseSubtotal-tierSubtotal,tierSubtotal,couponDiscount,specialDiscount,specialValid,couponValid,tierIndex,pricedItems};
 }

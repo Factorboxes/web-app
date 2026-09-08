@@ -13,7 +13,7 @@ export type MemberOrder = {
 export type MemberOrderDetail = MemberOrder & {
   customer: string; phone: string; address: string; tax: string;
   subtotal: number; shipping: number; vat: number;
-  coupon_code: string; coupon_discount: number; transferred_at: string | null;
+  special_code?: string; special_discount?: number; coupon_code: string; coupon_discount: number; transferred_at: string | null;
 };
 
 /** Read the order snapshot; never substitute current catalog names, prices or quantities. */
