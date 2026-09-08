@@ -10,6 +10,7 @@ export function queuePurchase(order:PurchaseOrder|null|undefined){
  const key='factorboxes-google-purchase:'+payload.send_to+':'+payload.transaction_id;
  if(queued.has(key))return true;
  try{if(localStorage.getItem(key)==='sent')return true}catch{}
+ if(typeof document!=='undefined'&&document.documentElement.dataset.googleAds!=='loaded')return false;
  const tag=(window as Window&{gtag?:(...args:any[])=>void}).gtag;if(typeof tag!=='function')return false;
  queued.add(key);
  try{tag('event','conversion',{...payload,page_location:location.origin+location.pathname,event_callback:()=>{try{localStorage.setItem(key,'sent')}catch{}}});return true}

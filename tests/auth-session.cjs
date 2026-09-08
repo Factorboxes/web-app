@@ -19,6 +19,7 @@ function load(file,modules={}){const e={};new Function('exports','require',ts.tr
  let response=await proxy(req());assert.equal(response.headers.get('location'),null);assert.equal(response.headers.get('cache-control'),'private, no-store');
  user={id:'customer',email_confirmed_at:'2026-09-01'};
  assert.equal((await proxy(req())).headers.get('location'),'https://shop.test/store');
+ assert.equal((await proxy(req('/?gclid=click123&gbraid=braid456&secret=omit'))).headers.get('location'),'https://shop.test/store?gclid=click123&gbraid=braid456');
  assert.equal((await proxy(req('/login?next=%2Faccount%2Forders'))).headers.get('location'),'https://shop.test/account/orders');
  for(const path of ['/store','/login?mode=password','/login?mode=reset','/login?mode=signup'])assert.equal((await proxy(req(path))).headers.get('location'),null,'Preserve auth recovery pages and store');
  user={id:'unconfirmed'};assert.equal((await proxy(req())).headers.get('location'),null);

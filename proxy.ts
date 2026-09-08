@@ -25,7 +25,11 @@ export async function proxy(request:NextRequest) {
   const authMode = searchParams.get('mode');
   const showAuthForm = authMode === 'password' || authMode === 'reset' || authMode === 'signup';
   if (!error && user?.email_confirmed_at && (pathname === '/' || pathname === '/login') && !showAuthForm) {
-    const destination = NextResponse.redirect(new URL(loginDestination(searchParams.get('next')), request.url));
+    const target = new URL(loginDestination(searchParams.get('next')), request.url);
+    for (const key of ['gclid','gbraid','wbraid','gad_source','gad_campaignid','gclsrc','gtm_debug']) {
+      const value=searchParams.get(key);if(value&&value.length<=2048)target.searchParams.set(key,value);
+    }
+    const destination = NextResponse.redirect(target);
     response.cookies.getAll().forEach(cookie => destination.cookies.set(cookie));
     response = destination;
   }
