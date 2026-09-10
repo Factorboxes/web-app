@@ -24,7 +24,7 @@ export async function proxy(request:NextRequest) {
   const {pathname, searchParams} = request.nextUrl;
   const authMode = searchParams.get('mode');
   const showAuthForm = authMode === 'password' || authMode === 'reset' || authMode === 'signup';
-  if (!error && user?.email_confirmed_at && (pathname === '/' || pathname === '/login') && !showAuthForm) {
+  if (!error && user?.email_confirmed_at && pathname === '/login' && !showAuthForm) {
     const target = new URL(loginDestination(searchParams.get('next')), request.url);
     for (const key of ['gclid','gbraid','wbraid','gad_source','gad_campaignid','gclsrc','gtm_debug']) {
       const value=searchParams.get(key);if(value&&value.length<=2048)target.searchParams.set(key,value);
