@@ -2,5 +2,26 @@ import {z} from 'zod';
 import {db,isAdmin} from '@/lib/server';
 import {identity} from '@/lib/member';
 export const dynamic='force-dynamic';
-export async function GET(request:Request){try{const user=await identity();if(!user)return Response.json({error:'กรุณาเข้าสู่ระบบ'},{status:401});if(new URL(request.url).searchParams.has('admin')){if(!await isAdmin('members'))return Response.json({error:'ไม่มีสิทธิ์'},{status:403});return Response.json({members:(await db().prepare('SELECT id,name,email,phone,address,postcode,updated FROM members ORDER BY updated DESC LIMIT 300').all()).results},{headers:{'Cache-Control':'no-store'}});}const member=await db().prepare('SELECT name,email,phone,address,postcode FROM members WHERE id=?').bind(user.id).first();return Response.json({member,email:user.email},{headers:{'Cache-Control':'no-store'}});}catch(e){console.error(e);return Response.json({error:'โหลดข้อมูลสมาชิกไม่สำเร็จ'},{status:503});}}
+export async function GET(request:Request){
+ try{
+  const user=await identity();if(!user)return Response.json({error:'กรุณาเข้าสู่ระบบ'},{status:401});
+  const url=new URL(request.url);
+  if(url.searchParams.has('admin')){
+   if(!await isAdmin('members'))return Response.json({error:'ไม่มีสิทธิ์ดูข้อมูลสมาชิก'},{status:403});
+   const q=(url.searchParams.get('q')||'').trim().slice(0,100);
+   const requested=Number(url.searchParams.get('page')||1),size=25;
+   const search="position(lower(?) in lower(concat_ws(' ',name,email,phone,address,postcode)))>0";
+   const incomplete="(COALESCE(trim(name),'')='' OR COALESCE(trim(phone),'')='' OR COALESCE(trim(address),'')='' OR COALESCE(trim(postcode),'') !~ '^[0-9]{5}$')";
+   const where=search+(url.searchParams.get('filter')==='incomplete'?' AND '+incomplete:'');
+   const counted=await db().prepare('SELECT count(*) AS count FROM members WHERE '+where).bind(q).first<{count:number}>();
+   const total=Number(counted?.count||0),pages=Math.max(1,Math.ceil(total/size));
+   const page=Math.min(pages,Number.isSafeInteger(requested)&&requested>0?requested:1);
+   const members=(await db().prepare('SELECT id,name,email,phone,address,postcode,updated FROM members WHERE '+where+' ORDER BY updated DESC,id LIMIT ? OFFSET ?').bind(q,size,(page-1)*size).all()).results;
+   const stats=await db().prepare('SELECT count(*) AS total,count(*) FILTER(WHERE '+incomplete+') AS incomplete FROM members').first<{total:number;incomplete:number}>();
+   return Response.json({members,total,page,pages,stats},{headers:{'Cache-Control':'private, no-store'}});
+  }
+  const member=await db().prepare('SELECT name,email,phone,address,postcode FROM members WHERE id=?').bind(user.id).first();
+  return Response.json({member,email:user.email},{headers:{'Cache-Control':'private, no-store'}});
+ }catch(e){console.error('member-load failed',e);return Response.json({error:'โหลดข้อมูลสมาชิกไม่สำเร็จ กรุณาลองใหม่ หากยังไม่สำเร็จให้ตรวจการเชื่อมต่อฐานข้อมูล'},{status:503});}
+}
 export async function POST(request:Request){try{if(request.headers.get('origin')!==new URL(request.url).origin)return Response.json({error:'คำขอไม่ถูกต้อง'},{status:403});const user=await identity();if(!user)return Response.json({error:'กรุณาเข้าสู่ระบบ'},{status:401});const b=z.object({email:z.string().trim().email().max(254),name:z.string().trim().min(2).max(100),phone:z.string().trim().transform(v=>v.replace(/[\s()-]/g,'').replace(/^\+66/,'0')).pipe(z.string().regex(/^0[0-9]{8,9}$/,'กรุณากรอกเบอร์โทรให้ครบ 9–10 หลัก')),address:z.string().trim().min(10).max(1000),postcode:z.string().trim().regex(/^[0-9]{5}$/)}).parse(await request.json());await db().prepare('INSERT INTO members (id,email,name,phone,address,postcode,updated) VALUES (?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET email=excluded.email,name=excluded.name,phone=excluded.phone,address=excluded.address,postcode=excluded.postcode,updated=excluded.updated').bind(user.id,b.email.toLowerCase(),b.name,b.phone,b.address,b.postcode,new Date().toISOString()).run();const member=await db().prepare('SELECT name,email,phone,address,postcode FROM members WHERE id=?').bind(user.id).first();return Response.json({ok:true,member},{headers:{'Cache-Control':'private, no-store'}});}catch(e){if(e instanceof z.ZodError)return Response.json({error:'ข้อมูลไม่ครบหรือรูปแบบไม่ถูกต้อง กรุณาตรวจสอบชื่อ เบอร์โทร ที่อยู่ และรหัสไปรษณีย์',fields:e.flatten().fieldErrors},{status:400});console.error('member-save failed',e);return Response.json({error:'ระบบบันทึกข้อมูลขัดข้อง กรุณาลองใหม่อีกครั้ง หากยังไม่สำเร็จให้แจ้งร้านค้า'},{status:503});}}

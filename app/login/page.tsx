@@ -1,7 +1,7 @@
 'use client';
 
 import {useState, useEffect, type FormEvent} from 'react';
-import {Mail, LockKeyhole, Eye, EyeOff, ArrowRight, Truck, ReceiptText, MapPin} from 'lucide-react';
+import {UserRound, Phone, Mail, LockKeyhole, Eye, EyeOff, ArrowRight, Truck, ReceiptText, MapPin} from 'lucide-react';
 import {browserAuth, readRememberLogin, setRememberLogin} from '@/lib/supabase/browser';
 import {InstallLink} from '../pwa';
 import {loginDestination} from '@/lib/supabase/session';
@@ -45,9 +45,15 @@ export default function Login() {
       if (mode === 'login' || mode === 'signup') setRememberLogin(remember);
       const client = browserAuth();
       if (mode === 'signup') {
-        const {error} = await client.auth.signUp({email, password, options: {emailRedirectTo: location.origin + '/auth/callback'}});
+        const name=String(form.get('full_name')||'').trim();
+        const phone=String(form.get('phone')||'').replace(/[\s()-]/g,'').replace(/^\+66/,'0');
+        if(name.length<2||name.length>100||!/^0[0-9]{8,9}$/.test(phone)){
+          setMessage('กรุณากรอกชื่อและเบอร์โทรให้ถูกต้อง');return;
+        }
+        const {data,error} = await client.auth.signUp({email, password, options: {emailRedirectTo: location.origin + '/auth/callback',data:{full_name:name,phone}}});
         if (error) throw error;
-        setMessage('ตรวจสอบอีเมลเพื่อยืนยันบัญชี แล้วเข้าสู่ระบบและกรอกที่อยู่จัดส่งที่หน้าสมาชิก');
+        if(data.session){location.assign('/account#member-profile');return;}
+        setMessage('ตรวจสอบอีเมลเพื่อยืนยันบัญชี แล้วเข้าสู่ระบบเพื่อเพิ่มที่อยู่จัดส่งที่หน้าสมาชิก');
       } else if (mode === 'reset') {
         const {error} = await client.auth.resetPasswordForEmail(email, {redirectTo: location.origin + '/auth/callback?next=/login%3Fmode%3Dpassword'});
         if (error) throw error;
@@ -75,6 +81,10 @@ export default function Login() {
       <h1 id="login-title">{titles[mode]}</h1>
       <p>{mode === 'reset' ? 'รับลิงก์ตั้งรหัสผ่านใหม่ทางอีเมล' : 'ยินดีต้อนรับสู่ Factorboxes'}</p>
       <form className="form login-form" method="post" onSubmit={submit} autoComplete="on" aria-busy={busy}>
+        {mode === 'signup' && <>
+          <label className="login-field"><UserRound aria-hidden="true"/><span className="sr-only">ชื่อผู้รับ</span><input name="full_name" placeholder="ชื่อ–นามสกุลผู้รับ" autoComplete="name" required minLength={2} maxLength={100} disabled={busy}/></label>
+          <label className="login-field"><Phone aria-hidden="true"/><span className="sr-only">เบอร์โทรศัพท์</span><input name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="เบอร์โทรศัพท์" required maxLength={25} disabled={busy}/></label>
+        </>}
         {mode !== 'password' && <label className="login-field">
           <Mail aria-hidden="true"/><span className="sr-only">อีเมล</span>
           <input id="login-email" name="email" type="email" inputMode="email" placeholder="Email" autoComplete={mode === 'login' ? 'username' : 'email'} autoCapitalize="none" spellCheck={false} required disabled={busy}/>

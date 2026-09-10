@@ -1,0 +1,30 @@
+const {PGlite}=require('@electric-sql/pglite'),fs=require('fs'),ts=require('typescript'),assert=require('node:assert/strict');
+(async()=>{
+ const pg=new PGlite();await pg.exec(`CREATE ROLE anon;CREATE ROLE authenticated;CREATE SCHEMA auth;CREATE TABLE auth.users(id uuid PRIMARY KEY,email text,raw_user_meta_data jsonb DEFAULT '{}');CREATE TABLE members(id text PRIMARY KEY,email text NOT NULL,name text NOT NULL,phone text NOT NULL,address text NOT NULL,postcode text NOT NULL,updated text NOT NULL);CREATE TABLE orders(id text PRIMARY KEY,member_id text,customer text,phone text,address text,created text,status text);`);
+ const alice='11111111-1111-4111-8111-111111111111',bob='22222222-2222-4222-8222-222222222222',blank='33333333-3333-4333-8333-333333333333',fresh='44444444-4444-4444-8444-444444444444';
+ await pg.query('INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES($1,$2,$3),($4,$5,$6),($7,$8,$9)',[alice,'alice@example.test',JSON.stringify({full_name:'Alice',phone:'+66 81-234-5678'}),bob,'bob@example.test',JSON.stringify({name:'Bob metadata',phone:'0811111111'}),blank,'blank@example.test','{}']);
+ await pg.query("INSERT INTO members VALUES($1,'contact@example.test','Saved Bob','0822222222','Saved street','10200','old')",[bob]);
+ await pg.query("INSERT INTO orders VALUES('alice-old',$1,'Alice recipient','0812345678','Original street 10110','2026-09-01','ชำระแล้ว'),('bob-old',$2,'Another recipient','0833333333','Other street 20000','2026-09-01','ชำระแล้ว'),('guest',NULL,'Guest','0812345678','Guest street 99999','2026-09-09','ชำระแล้ว'),('cancelled',$1,'Wrong','0812345678','Cancelled street 99999','2026-09-10','ยกเลิก')",[alice,bob]);
+ const migration=fs.readFileSync('supabase/20-member-directory-repair.sql','utf8');await pg.exec(migration);
+ const read=async id=>(await pg.query('SELECT * FROM members WHERE id=$1',[id])).rows[0];
+ let a=await read(alice);assert.equal(a.name,'Alice');assert.equal(a.phone,'0812345678');assert.equal(a.address,'Original street');assert.equal(a.postcode,'10110');assert.equal((await read(blank)).address,'');
+ const b=await read(bob);assert.equal(b.email,'contact@example.test');assert.equal(b.name,'Saved Bob');assert.equal(b.address,'Saved street');assert.equal(b.postcode,'10200');
+ await pg.exec(migration);assert.deepEqual(await read(alice),a,'idempotent: completed member and updated time preserved');
+ await pg.query('INSERT INTO auth.users VALUES($1,$2,$3)',[fresh,'new@example.test',JSON.stringify({full_name:'New member',phone:'0814444444'})]);assert.equal((await read(fresh)).name,'New member');
+ await pg.query("INSERT INTO orders VALUES('first',$1,'Recipient','0814444444','Fresh street 12345','2026-09-09','รอชำระเงิน')",[fresh]);assert.equal((await read(fresh)).address,'Fresh street');assert.equal((await read(fresh)).postcode,'12345');
+ await pg.query("UPDATE auth.users SET raw_user_meta_data=$1 WHERE id=$2",[JSON.stringify({full_name:'Overwrite attempt',phone:'0899999999',role:'admin'}),fresh]);assert.equal((await read(fresh)).name,'New member');
+ await pg.exec('SET ROLE authenticated');await assert.rejects(pg.query('SELECT public.factorboxes_complete_member($1,$2,$3,$4,$5,$6)',[blank,'forged@example.test','forged','0812345678','street','10110']),/permission denied/);await pg.exec('RESET ROLE');
+ // API: paging, search, completeness, auth guards and saved profile refresh.
+ let user={id:alice,email:'alice@example.test'},admin=true,fail=false;
+ const db={prepare(sql){return{bind(...v){this.v=v;return this},async execute(){if(fail)throw Error('offline');let n=0;return pg.query(sql.replaceAll('?',()=>'$'+ ++n),this.v||[])},async first(){return(await this.execute()).rows[0]||null},async run(){return this.execute()},async all(){return{results:(await this.execute()).rows}}}}};
+ const out={};new Function('exports','require',ts.transpileModule(fs.readFileSync('app/api/member/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText)(out,k=>({'zod':require('zod'),'@/lib/server':{db:()=>db,isAdmin:async()=>admin},'@/lib/member':{identity:async()=>user}}[k]));
+ for(let i=0;i<35;i++)await pg.query("INSERT INTO members VALUES($1,$2,'','','','','2026-09-08')",['fixture-'+i,'fixture'+i+'@example.test']);
+ const get=q=>out.GET(new Request('https://shop.test/api/member'+q));
+ let r=await get('?admin=1');assert.equal(r.status,200);let d=await r.json();assert.equal(d.members.length,25);assert.equal(d.total,39);assert.equal(d.pages,2);const page1=new Set(d.members.map(m=>m.id));d=await(await get('?admin=1&page=2')).json();assert.equal(d.members.length,14);assert.ok(d.members.every(m=>!page1.has(m.id)));
+ d=await(await get('?admin=1&q=ALICE')).json();assert.equal(d.total,1);assert.equal(d.members[0].id,alice);
+ d=await(await get('?admin=1&filter=incomplete')).json();assert.equal(d.total,36);assert.equal((await get('?admin=1&q=%27%3BDELETE')).status,200);
+ const body={email:'alice-contact@example.test',name:'Alice saved',phone:'+66 89-111-2222',address:'New saved street',postcode:' 10220 '};
+ r=await out.POST(new Request('https://shop.test/api/member',{method:'POST',headers:{origin:'https://shop.test','content-type':'application/json'},body:JSON.stringify({...body,id:bob})}));assert.equal(r.status,200);d=await(await get('')).json();assert.equal(d.member.phone,'0891112222');assert.equal(d.member.address,'New saved street');assert.equal((await read(bob)).address,'Saved street');
+ admin=false;assert.equal((await get('?admin=1')).status,403);user=null;assert.equal((await get('')).status,401);user={id:alice,email:'alice@example.test'};fail=true;const log=console.error;console.error=()=>{};assert.equal((await get('')).status,503);console.error=log;
+ await pg.close();console.log('PASS: auth backfill/new signup, metadata sync, saved-field preservation, linked order recovery, guest/cancel isolation, rerun, restricted helper, search/paging/incomplete filter, member save/refetch, admin/session guards');
+})().catch(e=>{console.error(e);process.exit(1)});
