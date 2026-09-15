@@ -17,6 +17,7 @@ import Staff from './staff';
 import BrandingEditor from './branding';
 import Coupons from './coupons';
 import Members from './members';
+import NotificationsAdmin from './notifications/panel';
 import './admin.css';
 
 export default function Admin({access}:{access:AdminAccess}){
@@ -42,6 +43,7 @@ export default function Admin({access}:{access:AdminAccess}){
  async function saveOrder(order:AdminOrder){await api({action:'update',...order});const fresh=await fetchOrder(order.id);setSelected(p=>p?.id===fresh.id?fresh:p);setRevision(r=>r+1);return fresh}
  async function reloadSelected(){setRevision(r=>r+1);if(selected)try{const fresh=await fetchOrder(selected.id);setSelected(p=>p?.id===fresh.id?fresh:p)}catch(e){setMessage((e as Error).message)}}
  const nav=[
+  {id:'notifications',label:'แจ้งเตือนลูกค้า',icon:Bell,show:can('notifications')},
   {id:'overview',label:'สรุปภาพรวม',icon:House,show:can('orders')||can('sales')},
   {id:'orders',label:'คำสั่งซื้อ',icon:ShoppingCart,show:can('orders')},
   {id:'payments',label:'ชำระเงิน / ตรวจสลิป',icon:CreditCard,show:can('orders')},
@@ -56,7 +58,7 @@ export default function Admin({access}:{access:AdminAccess}){
   {id:'branding',label:'แบนเนอร์ / ติดต่อร้าน',icon:ImageIcon,show:can('branding')},
   {id:'settings',label:'ตั้งค่าร้านค้า',icon:Settings,show:can('settings')},
  ];
- const descriptions:Record<string,string>={overview:'จัดการคำสั่งซื้อ สินค้า ลูกค้า และการจัดส่ง ในที่เดียว',orders:'ค้นหา ตรวจสถานะ และเปิดจัดการแต่ละออเดอร์ได้ทันที',payments:'ตรวจหลักฐาน ยืนยันรับเงิน และติดตามออเดอร์ที่รอชำระ',shipping:'ระบุขนส่ง เลขพัสดุ และพิมพ์ใบปะหน้าจากออเดอร์',products:'แก้ไขรหัสสินค้า ราคาแต่ละเรท และรูปสินค้าได้สูงสุด 5 รูป',branding:'เปลี่ยนโปรโมชั่น รูปแบนเนอร์ LINE และเบอร์โทรของร้าน',settings:'ข้อมูลบริษัท บัญชีรับโอน ภาษี และรายชื่อขนส่ง'};
+ const descriptions:Record<string,string>={notifications:'ติดตามออเดอร์ ส่งข่าวสาร และดูสถานะการส่งข้อความ',overview:'จัดการคำสั่งซื้อ สินค้า ลูกค้า และการจัดส่ง ในที่เดียว',orders:'ค้นหา ตรวจสถานะ และเปิดจัดการแต่ละออเดอร์ได้ทันที',payments:'ตรวจหลักฐาน ยืนยันรับเงิน และติดตามออเดอร์ที่รอชำระ',shipping:'ระบุขนส่ง เลขพัสดุ และพิมพ์ใบปะหน้าจากออเดอร์',products:'แก้ไขรหัสสินค้า ราคาแต่ละเรท และรูปสินค้าได้สูงสุด 5 รูป',branding:'เปลี่ยนโปรโมชั่น รูปแบนเนอร์ LINE และเบอร์โทรของร้าน',settings:'ข้อมูลบริษัท บัญชีรับโอน ภาษี และรายชื่อขนส่ง'};
  const orderTab=['orders','payments','shipping'].includes(tab);
  return <div className="admin-experience"><header className="admin-header"><button className="admin-menu-toggle" aria-label="เปิดเมนูจัดการร้าน" aria-expanded={menuOpen} onClick={()=>setMenuOpen(v=>!v)}><Menu size={23}/></button><a className="admin-brand" href="/admin"><img src="/factorboxes-logo.jpeg" alt="โลโก้ FACTORBOXES"/><span><b>FACTOR</b><em>BOXES</em><small>PACK YOUR NEXT POSSIBILITY</small></span></a>{can('orders')&&<label className="admin-header-search"><Search size={18}/><input aria-label="ค้นหาออเดอร์" placeholder="ค้นหาเลขออเดอร์ ชื่อลูกค้า สินค้า …" value={query} onChange={e=>search(e.target.value)}/>{query&&<button aria-label="ล้างคำค้น" onClick={()=>search('')}><X size={15}/></button>}</label>}<div className="admin-profile-area">{can('orders')&&<button className="admin-notification" aria-label={'สลิปรอตรวจสอบ '+(dashboard?.slips?.total??0)+' รายการ'} onClick={()=>openOrders('pending')}><Bell size={22}/>{!!dashboard?.slips?.total&&<i/>}</button>}<details className="admin-profile"><summary><span className="admin-avatar">A</span><span>Admin<small>{access.owner?'เจ้าของร้าน':'ผู้ดูแลร้าน'}</small></span><ChevronDown size={15}/></summary><div><span>{access.owner?'สิทธิ์ครบทุกส่วน':'แสดงเฉพาะส่วนที่มีสิทธิ์'}</span><a href="/auth/signout?next=%2Fadmin"><LogOut size={16}/>ออกจากระบบ</a></div></details></div></header>
   {menuOpen&&<button className="admin-nav-shade" aria-label="ปิดเมนูจัดการร้าน" onClick={()=>setMenuOpen(false)}/>}
@@ -65,7 +67,7 @@ export default function Admin({access}:{access:AdminAccess}){
    {message&&<div role="status" className="admin-feedback admin-main-feedback"><span>{message}</span><button aria-label="ปิดข้อความหลังบ้าน" onClick={()=>setMessage('')}><X size={17}/></button></div>}
    {tab==='overview'&&(can('orders')||can('sales'))&&<Overview data={dashboard} loading={dashboardLoading} error={dashboardError} access={access} date={date} revision={revision} onTab={navigate} onOrders={openOrders} onOpen={openOrder}/>}
    {orderTab&&can('orders')&&<Orders query={query} filter={filter} date={orderDate} revision={revision} onFilter={setFilter} onDate={setOrderDate} onQuery={setQuery} onOpen={openOrder}/>}
-   <div className="admin-module">{tab==='sales'&&can('sales')&&<Sales/>}{tab==='analytics'&&can('sales')&&<Analytics/>}{tab==='accounting'&&can('accounting')&&<Accounting/>}{tab==='staff'&&access.owner&&<Staff/>}{tab==='members'&&can('members')&&<Members/>}{tab==='products'&&can('products')&&<ProductsEditor products={products} setProducts={setProducts} busy={busy} loading={loading} save={save}/>}{tab==='coupons'&&can('coupons')&&<Coupons/>}{tab==='branding'&&can('branding')&&<BrandingEditor/>}{tab==='settings'&&can('settings')&&<SettingsEditor settings={settings} setSettings={setSettings} carriers={carriers} busy={busy} loading={loading} save={save}/>}</div>
+   <div className="admin-module">{tab==='notifications'&&can('notifications')&&<NotificationsAdmin/>}{tab==='sales'&&can('sales')&&<Sales/>}{tab==='analytics'&&can('sales')&&<Analytics/>}{tab==='accounting'&&can('accounting')&&<Accounting/>}{tab==='staff'&&access.owner&&<Staff/>}{tab==='members'&&can('members')&&<Members/>}{tab==='products'&&can('products')&&<ProductsEditor products={products} setProducts={setProducts} busy={busy} loading={loading} save={save}/>}{tab==='coupons'&&can('coupons')&&<Coupons/>}{tab==='branding'&&can('branding')&&<BrandingEditor/>}{tab==='settings'&&can('settings')&&<SettingsEditor settings={settings} setSettings={setSettings} carriers={carriers} busy={busy} loading={loading} save={save}/>}</div>
    <div className="admin-footer"><span>© 2026 FACTORBOXES · ระบบจัดการร้านค้า</span><span>Pack Your Next Possibility</span></div>
   </main>
   {can('orders')&&<OrderDetail order={selected} section={orderSection} carriers={carriers} onClose={()=>setSelected(null)} onSave={saveOrder} onReload={reloadSelected}/>}
