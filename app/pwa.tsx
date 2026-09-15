@@ -1,5 +1,6 @@
 'use client';
 import {createContext,useContext,useEffect,useState,type ReactNode} from 'react';
+import AppBadge from './notifications/app-badge';
 interface InstallPrompt extends Event {prompt:()=>Promise<void>;userChoice:Promise<{outcome:'accepted'|'dismissed'}>}
 const Context=createContext<{installed:boolean;ready:boolean;install:()=>Promise<boolean>}>({installed:false,ready:false,install:async()=>false});
 export function PwaProvider({children}:{children:ReactNode}){
@@ -14,7 +15,7 @@ export function PwaProvider({children}:{children:ReactNode}){
   return()=>{window.removeEventListener('beforeinstallprompt',prompt);window.removeEventListener('appinstalled',done);media.removeEventListener('change',check)};
  },[]);
  async function install(){if(!event)return false;setEvent(null);try{await event.prompt();return(await event.userChoice).outcome==='accepted'}catch{return false}}
- return <Context.Provider value={{installed,ready:Boolean(event),install}}>{children}</Context.Provider>;
+ return <Context.Provider value={{installed,ready:Boolean(event),install}}><AppBadge/>{children}</Context.Provider>;
 }
 export const usePwa=()=>useContext(Context);
 export function InstallLink({className=''}:{className?:string}){const {installed}=usePwa();return installed?null:<a className={className} href="/install">เพิ่มแอปลงหน้าจอมือถือ ↗</a>}
