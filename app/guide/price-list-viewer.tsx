@@ -5,7 +5,7 @@ import './price-list-viewer.css';
 
 const clampZoom = (value: number) => Math.min(4, Math.max(1, value));
 
-export default function PriceListViewer({src}: {src: string}) {
+export default function PriceListViewer({src, title = 'ใบราคากล่องไปรษณีย์', description = 'ใบราคากล่อง FACTORBOXES 40 รายการ แบ่งตามยอดสั่งซื้อ 5 เรท', downloadName = 'factorboxes-price-list.jpg'}: {src: string; title?: string; description?: string; downloadName?: string}) {
   const titleId = useId();
   const hintId = useId();
   const dialogId = useId();
@@ -133,8 +133,8 @@ export default function PriceListViewer({src}: {src: string}) {
 
   return <>
     <button type="button" className="guide-sheet price-list-preview" aria-haspopup="dialog"
-      aria-controls={dialogId} aria-label="เปิดใบราคาขนาดเต็ม" onClick={event => show(event.currentTarget)}>
-      <img src={src} alt="ใบราคากล่อง FACTORBOXES 40 รายการ แบ่งตามยอดสั่งซื้อ 5 เรท" loading="lazy"/>
+      aria-controls={dialogId} aria-label={`เปิด${title}ขนาดเต็ม`} onClick={event => show(event.currentTarget)}>
+      <img src={src} alt={description} loading="lazy"/>
     </button>
     <div className="guide-price-bottom">
       <span>แตะภาพเพื่อดูใบราคา ขยาย–ย่อได้ และกดปิดเพื่อกลับหน้าเดิม</span>
@@ -145,7 +145,7 @@ export default function PriceListViewer({src}: {src: string}) {
       aria-describedby={hintId} onCancel={event => {event.preventDefault(); setOpen(false);}}
       onClose={() => {if (!dialog.current?.open) setOpen(false);}}>
       <div className="price-list-toolbar">
-        <strong id={titleId}>ใบราคากล่องไปรษณีย์</strong>
+        <strong id={titleId}>{title}</strong>
         <button ref={closeButton} type="button" className="price-list-close" onClick={() => setOpen(false)}>
           <span aria-hidden="true">×</span> ปิด / กลับหน้าเดิม
         </button>
@@ -160,15 +160,16 @@ export default function PriceListViewer({src}: {src: string}) {
           setZoom(1);
           viewport.current?.scrollTo(0, 0);
         }}>พอดีจอ</button>
-        <a href={src} download="factorboxes-price-list.jpg" aria-label="ดาวน์โหลดใบราคา">ดาวน์โหลด ↓</a>
+        <a href={src} download={downloadName} aria-label="ดาวน์โหลดใบราคา">ดาวน์โหลด ↓</a>
       </div>
       <p id={hintId} className="price-list-hint">ใช้สองนิ้วหรือปุ่ม + เพื่อขยาย แล้วเลื่อนภาพดูราคา</p>
       <div ref={viewport} className="price-list-viewport" tabIndex={0} aria-label="ภาพใบราคา เลื่อนดูได้">
         {open && (failed ? <p className="price-list-error" role="alert">โหลดภาพไม่สำเร็จ กรุณาปิดแล้วเปิดใหม่อีกครั้ง</p> :
           <img ref={image} className="price-list-full-image" src={src}
             style={{width: baseWidth ? baseWidth * zoom : '100%'}}
-            alt="ใบราคากล่อง FACTORBOXES ขนาดเต็ม" draggable={false} onError={() => setFailed(true)}/>)}
+            alt={`${description} ขนาดเต็ม`} draggable={false} onError={() => setFailed(true)}/>)}
       </div>
     </dialog>
   </>;
 }
+
