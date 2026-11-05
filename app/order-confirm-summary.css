@@ -43,3 +43,24 @@
 .cartdrawer .fb-confirm .confirm-right{position:static}
 @media(max-width:760px){.checkout-refresh.checkout-page{padding:18px 12px;max-width:100%;border-radius:0}.fb-confirm .confirm-layout{grid-template-columns:1fr}.fb-confirm .confirm-right{position:static}.fb-confirm .confirm-panel,.fb-confirm .checkoutcoupon,.fb-confirm .checkout-shipping{padding:18px;border-radius:16px}.fb-confirm .confirm-amount{font-size:31px}}
 @media print{body>header,body>footer,.site-header,.announcement,.fb-confirm button,.fb-confirm .checkoutcoupon,.fb-confirm .checkout-shipping,.fb-confirm .confirm-add,.fb-confirm .checkoutsteps{display:none!important}.fb-confirm .confirm-layout{display:block}.fb-confirm .confirm-right{position:static}.fb-confirm .confirm-panel{box-shadow:none;break-inside:avoid}.fb-confirm .confirm-table{min-width:0}.fb-confirm .confirm-table th:last-child,.fb-confirm .confirm-table td:last-child{display:none}.fb-confirm .confirm-table input{border:0;padding:0;width:70px}}
+
+/* Keep payment immediately after products in DOM and mobile reading order. */
+.fb-confirm .confirm-left{display:contents}
+.fb-confirm .confirm-left>*{grid-column:1}
+.fb-confirm .confirm-left>.confirm-right{grid-column:2;grid-row:1 / span 4}
+@media(max-width:760px){
+ .fb-confirm .confirm-layout{gap:12px}
+ .fb-confirm .confirm-left>*{grid-column:1;grid-row:auto}
+ .fb-confirm .confirm-left>.confirm-right{grid-column:1;grid-row:auto}
+ .fb-confirm .confirm-panel,.fb-confirm .checkoutcoupon,.fb-confirm .checkout-shipping{padding:16px;margin:0;border-radius:14px}
+ .fb-confirm .confirm-right .confirm-panel{margin:0}
+ .fb-confirm .confirm-stats{margin:12px 0;gap:8px}
+ .fb-confirm .confirm-stat{padding:10px}
+ .fb-confirm .confirm-stat strong{font-size:22px}
+ .fb-confirm .confirm-line{padding:6px 0}
+ .fb-confirm hr{margin:10px 0}
+ .fb-confirm .confirm-total{padding:12px;margin-top:10px}
+ .fb-confirm .confirm-right .confirm-action,.fb-confirm .confirm-right .confirm-print,.fb-confirm .confirm-right .confirm-note{display:none}
+}
+.cartdrawer .fb-confirm .confirm-left>*{grid-column:1;grid-row:auto}
+.cartdrawer .fb-confirm .confirm-left>.confirm-right{grid-column:1;grid-row:auto}
