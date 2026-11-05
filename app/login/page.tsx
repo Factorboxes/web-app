@@ -105,7 +105,7 @@ export default function Login() {
     </section>
     <div className="login-benefits">
       <span><Truck aria-hidden="true"/><b>{freeShipping !== null ? `ส่งฟรีครบ ฿${freeShipping.toLocaleString('th-TH')}` : 'สั่งซื้อง่าย'}</b><small>สั่งง่าย คุ้มกว่า</small></span>
-      <span><ReceiptText aria-hidden="true"/><b>ราคารวม VAT</b><small>ขอใบกำกับภาษี</small></span>
+      <span><ReceiptText aria-hidden="true"/><b>แสดง VAT แยกชัดเจน</b><small>ขอใบกำกับภาษี</small></span>
       <span><MapPin aria-hidden="true"/><b>จัดส่งทั่วไทย</b><small>เช็กสถานะได้</small></span>
     </div>
     <p className="login-tagline">PACK YOUR NEXT POSSIBILITY</p>

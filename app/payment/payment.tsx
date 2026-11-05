@@ -67,7 +67,7 @@ export default function Payment({token,initial,initialSlips,bank,freeShipping=75
         <div className="pay-order-actions"><button type="button" className="pay-link" onClick={()=>copy(window.location.href,'ลิงก์ชำระเงิน')}><Link2 size={17}/>{copied==='ลิงก์ชำระเงิน'?'คัดลอกลิงก์แล้ว':'เก็บลิงก์ไว้ชำระภายหลัง'}</button><button type="button" className="pay-link" disabled={refreshing} onClick={refresh}><RefreshCw size={16} className={refreshing?'pay-spinning':''}/>{refreshing?'กำลังตรวจสอบ…':'ตรวจสอบสถานะล่าสุด'}</button><a className="pay-link" href={'/track?token='+token}>ติดตามออเดอร์<ArrowRight size={17}/></a></div>
         <p className="pay-private-note">ลิงก์นี้ใช้เข้าถึงออเดอร์ของคุณ กรุณาเก็บไว้เป็นส่วนตัว</p>
       </article>
-      <div className="pay-benefits"><div><Truck/><span><strong>ส่งฟรีครบ ฿{freeShipping.toLocaleString('th-TH')}</strong><small>สั่งง่าย คุ้มกว่า</small></span></div><div><ReceiptText/><span><strong>ราคาสินค้ารวม VAT</strong><small>ขอใบกำกับภาษีได้</small></span></div><div><MapPin/><span><strong>จัดส่งทั่วไทย</strong><small>ติดตามออเดอร์ได้</small></span></div></div>
+      <div className="pay-benefits"><div><Truck/><span><strong>คิดค่าจัดส่งตามจำนวนห่อ</strong><small>สั่งง่าย คุ้มกว่า</small></span></div><div><ReceiptText/><span><strong>แสดง VAT แยกชัดเจน</strong><small>ขอใบกำกับภาษีได้</small></span></div><div><MapPin/><span><strong>จัดส่งทั่วไทย</strong><small>ติดตามออเดอร์ได้</small></span></div></div>
     </main>
     <div className={'pay-toast '+(notice?'visible':'')} role="status" aria-live="polite">{notice&&<><Info size={18}/><span>{notice}</span><button type="button" onClick={()=>setNotice('')} aria-label="ปิดข้อความ">×</button></>}</div>
   </div>;

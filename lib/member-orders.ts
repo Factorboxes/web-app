@@ -4,7 +4,7 @@ export const memberFilterLabels: Record<MemberOrderFilter, string> = {
   all: 'ทั้งหมด', waiting: 'รอชำระ / ตรวจสลิป', packing: 'รอแพ็ก / กำลังแพ็ก',
   shipping: 'กำลังจัดส่ง', delivered: 'ส่งสำเร็จ', cancelled: 'ยกเลิก',
 };
-export type OrderItem = {id: string; sku: string; name: string; size: string; category: string; qty: number; price: number};
+export type OrderItem = {id: string; sku: string; name: string; size: string; category: string; qty: number; price: number; priceBasis?:string; packing?:{parcels:number;lastWeightKg:number}};
 export type MemberOrder = {
   id: string; order_no?: string | number | null; token: string; created: string;
   total: number; payment: string; status: string; carrier: string; tracking: string;
@@ -28,7 +28,7 @@ export function purchasedItems(raw: string): OrderItem[] | null {
         !Number.isSafeInteger(item.qty * item.price)) throw Error('Invalid saved item');
       return {id: String(item.id ?? index), sku: typeof item.sku === 'string' ? item.sku : '',
         name: item.name, size: typeof item.size === 'string' ? item.size : '',
-        category: typeof item.category === 'string' ? item.category : '', qty: item.qty, price: item.price};
+        category: typeof item.category === 'string' ? item.category : '', qty: item.qty, price: item.price,priceBasis:typeof item.priceBasis==='string'?item.priceBasis:undefined,packing:item.packing&&Number.isSafeInteger(item.packing.parcels)&&item.packing.parcels>0?{parcels:item.packing.parcels,lastWeightKg:Number(item.packing.lastWeightKg)||0}:undefined};
     });
   } catch { return null; }
 }

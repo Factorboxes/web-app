@@ -1,0 +1,7 @@
+'use client';
+import {type ParcelGroup} from '@/lib/mixed-packing';
+import {type defaultSettings,money} from '@/lib/catalog';
+type Packing={id?:string;capacity?:number|null;full:number;remaining:number;parcels:number;fullWeightKg:number;lastWeightKg:number;valid:boolean};
+export default function PackingSummary({totals:t,settings}:{totals:{parcelGroups:ParcelGroup[];packing:Packing[];parcelCount:number;shipping:number;shippingReady:boolean};settings:typeof defaultSettings}){
+ return <section className="notice" aria-label="จำนวนห่อและค่าจัดส่ง"><h3>📦 จำนวนห่อและค่าจัดส่ง</h3><p>ผสมหลายขนาดในห่อเดียวกัน · ไม่เกิน 25 กก./ห่อ</p>{t.parcelGroups.map((g,index)=><div key={index}><b>{g.count>1?`${g.count} ห่อ รูปแบบเดียวกัน`:`ห่อรูปแบบที่ ${index+1}`} · {g.weightKg.toFixed(3)} กก./ห่อ</b><p>{g.lines.map(l=>`${l.name} ${l.qty.toLocaleString()} หน่วย`).join(' + ')}</p></div>)}{t.packing.filter(p=>!p.valid).map((p,index)=><p key={index}>{p.id}: รอร้านระบุจำนวนต่อห่อ</p>)}<p><b>รวม {t.parcelCount.toLocaleString()} ห่อ</b>{settings.shippingPerParcel!=null&&<> × ฿{money(Math.round(settings.shippingPerParcel*100))}/ห่อ</>}</p>{t.shippingReady?<p>ค่าจัดส่ง <b>฿{money(t.shipping)}</b></p>:<p role="alert">ยังยืนยันออเดอร์ไม่ได้: {!settings.pricingReady?'ร้านกำลังอัปเดตราคา':t.packing.some(p=>!p.valid)?'ข้อมูลห่อของสินค้าบางรายการยังไม่ครบ':'รอร้านตั้งอัตราค่าจัดส่งต่อห่อ'}</p>}<small>น้ำหนักคำนวณตามสัดส่วนจากไฟล์ร้าน ไม่ใช่ผลชั่งจริง ร้านต้องชั่งตรวจไม่เกิน 25 กก. ก่อนส่ง อัตราค่าจัดส่งนี้เป็นอัตราต่อห่อที่ร้านตั้งไว้ ยังไม่ได้เชื่อมราคาจาก KEX</small></section>;
+}
