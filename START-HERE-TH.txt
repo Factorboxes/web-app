@@ -1,4 +1,3 @@
-อัปโหลด app/order-confirm-summary.css ทับไฟล์เดิมใน GitHub แล้วรอ Vercel Ready
-ชุดนี้แก้ความกว้างหน้ามือถือและจำกัดตารางสินค้าให้เลื่อนในกรอบ ไม่เปลี่ยนราคา/สูตร/ฐานข้อมูล
-ต้องใช้หลังจากชุด factorboxes-mobile-compact-update.zip
-ตรวจ TypeScript ผ่าน ยังไม่ได้ทดสอบบน iPhone จริงหรือ deploy
+อัปโหลด app/guide/screen.tsx ทับไฟล์เดิมใน GitHub แล้วรอ Vercel Ready
+ใบราคาขึ้นส่วนแรกของหน้าแรกทันทีหลังหัวเว็บ; ส่วนติดตั้งแอปและติดต่อร้านอยู่ถัดไป
+ไม่ต้องรัน SQL ผ่าน TypeScript แล้ว ยังไม่ได้ deploy
