@@ -5,3 +5,19 @@
 .fb-guide #contact{margin-bottom:26px;scroll-margin-top:20px}
 @media(max-width:640px){.fb-guide #contact{margin-bottom:22px}}
 
+
+/* Contact shortcuts sit beside the brand on the first-page header. */
+.fb-guide header{position:relative;gap:16px}
+.fb-guide .guide-brand{flex:none;white-space:nowrap}
+.fb-guide .guide-header-right,.fb-guide .guide-header-contacts,.fb-guide .guide-header-account{display:flex;align-items:center;min-width:0}
+.fb-guide .guide-header-right{gap:14px;margin-left:auto}
+.fb-guide .guide-header-contacts{gap:8px}
+.fb-guide .guide-header-contact{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:8px 11px;border:1px solid #e8e9e7;border-radius:999px;background:#fff;font:inherit;font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
+.fb-guide .guide-header-contact.phone{background:#fff3ea;border-color:#f8d9c5}
+.fb-guide .guide-header-contact.line{background:#effaf2;border-color:#d7eedc}
+.fb-guide .guide-header-contact.facebook{background:#f1f6ff;border-color:#dce7f7}
+.fb-guide .guide-header-account{gap:12px;border-left:1px solid #e6e9e7;padding-left:14px}
+.fb-guide .guide-header-account>a{display:inline-flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap}
+.fb-guide .guide-copy-status:not(:empty){position:absolute;right:20px;top:100%;z-index:4;background:#fff;border:1px solid #d7eedc;border-radius:8px;padding:8px 12px;font-size:12px;box-shadow:0 6px 20px #0001}
+@media(max-width:900px){.fb-guide header{padding:10px 14px}.fb-guide .guide-header-right{gap:7px}.fb-guide .guide-header-contacts{gap:5px}.fb-guide .guide-header-contact{padding:7px;min-width:36px;min-height:40px}.fb-guide .guide-header-contact span,.fb-guide .guide-header-account>a span{display:none}.fb-guide .guide-header-account{gap:7px;padding-left:8px}}
+@media(max-width:450px){.fb-guide .guide-brand{font-size:14px;letter-spacing:-.5px}.fb-guide .guide-brand img{width:28px;height:28px}.fb-guide header{padding:8px;gap:5px}.fb-guide .guide-header-contact{min-width:31px;min-height:36px;padding:5px}.fb-guide .guide-header-contact svg{width:16px;height:16px}.fb-guide .guide-header-contacts{gap:3px}.fb-guide .guide-header-account{gap:4px;padding-left:5px}.fb-guide .guide-header-account>a svg{width:17px;height:17px}}
