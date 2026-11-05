@@ -1,0 +1,45 @@
+.checkout-refresh.checkout-page{max-width:1120px;background:#f4f7fb;border-radius:22px;padding:26px 20px 40px}
+.fb-confirm{color:#17233d;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-synthesis:none}
+.fb-confirm .confirm-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(300px,.85fr);gap:20px;align-items:start}
+.fb-confirm .confirm-left{min-width:0}
+.fb-confirm .confirm-panel,.fb-confirm .checkoutcoupon,.fb-confirm .checkout-shipping{background:white;border:1px solid #e6ecf5;border-radius:20px;padding:24px;box-shadow:0 7px 28px #1e386509;margin:0 0 18px}
+.fb-confirm h2,.fb-confirm h3{color:#17233d;font-size:18px;margin:0 0 16px;line-height:1.5}
+.fb-confirm .confirm-description{color:#71819a;font-size:14px;margin:0}
+.fb-confirm .confirm-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.fb-confirm .confirm-stat{background:#f1f6ff;padding:16px;border-radius:14px}
+.fb-confirm .confirm-stat:nth-child(2){background:#f5f7fa}
+.fb-confirm .confirm-stat span{display:block;color:#71819a;font-size:12px}
+.fb-confirm .confirm-stat strong{font-size:28px;color:#1749a5}
+.fb-confirm .confirm-stat small{margin-left:6px;color:#71819a;font-size:12px}
+.fb-confirm .confirm-tablewrap{overflow:auto}
+.fb-confirm .confirm-table{width:100%;border-collapse:collapse;font-size:14px;min-width:500px}
+.fb-confirm .confirm-table th{text-align:right;color:#7b889c;font-size:12px;font-weight:600;padding:12px 7px;border-bottom:1px solid #e7edf5;background:white;white-space:nowrap}
+.fb-confirm .confirm-table td{padding:14px 7px;border-bottom:1px solid #eef2f7;text-align:right;color:#20334d}
+.fb-confirm .confirm-table th:first-child,.fb-confirm .confirm-table td:first-child{text-align:left}
+.fb-confirm .confirm-table td:first-child small{display:block;color:#71819a;font-size:12px}
+.fb-confirm .confirm-table input{border:1px solid #dae3ef;border-radius:9px;padding:9px;width:82px;min-height:44px;text-align:right;background:#fff;color:#20334d;font-size:16px}
+.fb-confirm .confirm-delete{border:0;background:#fff0f1;color:#c7424b;border-radius:8px;min-width:40px;min-height:44px;padding:7px 10px}
+.fb-confirm .confirm-add{display:inline-block;border:1px dashed #9eb8e4;background:#f4f8ff;color:#1550a8;border-radius:10px;padding:11px 15px;font-size:14px;font-weight:650;margin-top:17px;text-decoration:none}
+.fb-confirm .confirm-right{position:sticky;top:18px;min-width:0}
+.fb-confirm .confirm-line{display:flex;justify-content:space-between;gap:15px;padding:9px 0;font-size:14px}
+.fb-confirm .confirm-line>span{color:#677890}
+.fb-confirm .confirm-line small{display:block;font-size:12px;color:#71819a}
+.fb-confirm .confirm-line strong{font-variant-numeric:tabular-nums;white-space:nowrap}
+.fb-confirm hr{border:0;border-top:1px solid #e6edf5;margin:20px 0}
+.fb-confirm .confirm-total{background:#eaf2ff;border-radius:16px;padding:19px;margin-top:18px}
+.fb-confirm .confirm-total label{color:#315783;font-size:13px;font-weight:700}
+.fb-confirm .confirm-amount{font-size:clamp(24px,3vw,34px);font-weight:850;color:#134399;letter-spacing:-1px;margin-top:3px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.fb-confirm .confirm-badge{display:inline-block;background:#e5f8ed;color:#147743;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:700}
+.fb-confirm .confirm-action,.fb-confirm .checkout-shipping>button.primary{width:100%;background:#1d52bb;color:white;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:700;margin-top:18px;min-height:48px;cursor:pointer}
+.fb-confirm .confirm-action:disabled{opacity:.5;cursor:not-allowed}
+.fb-confirm .confirm-print{background:white;color:#315783;border:1px solid #dbe4ef;border-radius:10px;padding:11px;min-height:44px;width:100%;margin-top:10px}
+.fb-confirm .confirm-note{font-size:12px;color:#7888a0;line-height:1.7;margin-top:12px}
+.fb-confirm .confirm-alert{background:#fff7e7;color:#8f6000;border-radius:10px;padding:12px;font-size:13px}
+.fb-confirm .confirm-shipping .notice{background:#f0f6ff;border:0;border-radius:12px;padding:13px;color:#365b8c;font-size:13px;line-height:1.7}
+.fb-confirm .confirm-shipping .notice>div{border-bottom:1px solid #dce6f2;padding:10px 0}
+.fb-confirm .checkoutcoupon{border-top:3px solid #9eb8e4}
+.fb-confirm .checkoutsteps b{color:#1749a5;background:#eaf2ff;border-color:#c5d8f5}
+.cartdrawer .fb-confirm .confirm-layout{grid-template-columns:1fr}
+.cartdrawer .fb-confirm .confirm-right{position:static}
+@media(max-width:760px){.checkout-refresh.checkout-page{padding:18px 12px;max-width:100%;border-radius:0}.fb-confirm .confirm-layout{grid-template-columns:1fr}.fb-confirm .confirm-right{position:static}.fb-confirm .confirm-panel,.fb-confirm .checkoutcoupon,.fb-confirm .checkout-shipping{padding:18px;border-radius:16px}.fb-confirm .confirm-amount{font-size:31px}}
+@media print{body>header,body>footer,.site-header,.announcement,.fb-confirm button,.fb-confirm .checkoutcoupon,.fb-confirm .checkout-shipping,.fb-confirm .confirm-add,.fb-confirm .checkoutsteps{display:none!important}.fb-confirm .confirm-layout{display:block}.fb-confirm .confirm-right{position:static}.fb-confirm .confirm-panel{box-shadow:none;break-inside:avoid}.fb-confirm .confirm-table{min-width:0}.fb-confirm .confirm-table th:last-child,.fb-confirm .confirm-table td:last-child{display:none}.fb-confirm .confirm-table input{border:0;padding:0;width:70px}}
