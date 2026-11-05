@@ -64,3 +64,13 @@
 }
 .cartdrawer .fb-confirm .confirm-left>*{grid-column:1;grid-row:auto}
 .cartdrawer .fb-confirm .confirm-left>.confirm-right{grid-column:1;grid-row:auto}
+/* Checkout mobile viewport: keep all cards inside the screen, with table scrolling only inside its own card. */
+@media(max-width:760px){
+ .checkout-refresh.checkout-page{width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin:0;padding:14px 12px calc(24px + env(safe-area-inset-bottom));overflow-x:clip}
+ .checkout-refresh .checkoutcontent.fb-confirm{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+ .checkout-refresh .checkoutcontent.fb-confirm>.confirm-layout{width:100%;max-width:100%;min-width:0;box-sizing:border-box;margin:0;padding:0;border:0;background:transparent;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr)}
+ .fb-confirm .confirm-left>.confirm-panel,.fb-confirm .confirm-left>.confirm-right,.fb-confirm .confirm-left>.checkoutcoupon,.fb-confirm .confirm-left>.checkout-shipping{min-width:0;max-width:100%;box-sizing:border-box}
+ .fb-confirm .confirm-tablewrap{width:100%;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+ .fb-confirm .confirm-table{width:100%;min-width:500px}
+ .fb-confirm .confirm-add{max-width:100%}
+}
