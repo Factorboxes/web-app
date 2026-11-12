@@ -1,9 +1,1 @@
-FACTORBOXES ปรับราคาเบอร์ C เป็น 3.15 บาท/ใบ (ยังไม่รวม VAT และค่าจัดส่ง)
-
-1. แตก ZIP แล้วอัปโหลด app/guide/screen.tsx, lib/catalog.ts และ public/price-lists/factorboxes-customer-price-20261106.png ไปยังตำแหน่งเดียวกันใน GitHub
-2. รอ Vercel ขึ้น Ready
-3. ใน Supabase SQL Editor รัน supabase/26-box-c-price-315.sql เพื่อปรับราคาจริงในฐานข้อมูล
-4. ตรวจหน้าแรก /store และตะกร้า: เบอร์ C ต้องแสดง 3.15 บาท/ใบ
-
-ห้ามรัน SQL 25-red-ink-prices.sql ซ้ำหลัง SQL 26 เพราะจะย้อนราคาเบอร์ C เป็น 2.99 บาท
-SQL นี้แก้เฉพาะสินค้า id=C ไม่แก้คำสั่งซื้อเก่า เบอร์ C+8 หรือกล่องผลไม้ C+9
+แตก ZIP แล้วอัปโหลดโฟลเดอร์ app และ public ทับตามตำแหน่งเดิมใน GitHub รอ Vercel ขึ้น Ready แล้วทดสอบปุ่ม LINE ที่หัวหน้าแรก และสแกนรูปใต้ใบราคา ไม่ต้องรัน SQL
